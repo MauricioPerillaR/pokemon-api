@@ -49,7 +49,7 @@ Iniciar Servicio:
 py manage.py runserver
 ```
 
-Obtener caraterísticas y evoluciones de un pokemon por nombre --> URL "<host>:<port>/api/v1/pokemon/<pokemon_name>"
+Obtener caraterísticas y evoluciones de un pokemon por nombre --> URL "host:port/api/v1/pokemon/<pokemon_name>"
 ```
 http://localhost:8000/api/v1/pokemon/raichu
 ```
