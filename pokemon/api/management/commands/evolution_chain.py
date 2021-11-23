@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandParser
 import requests
+from requests.models import Response
 
 
 from api.models import Pokemon
@@ -11,12 +12,17 @@ class Command(BaseCommand):
         
     def handle(self, *args, **options):
         evolution_chain = self.get_evolution_chain(options['id'])
-        self.create_all_pokemon_of_evolution_chain(evolution_chain)
+        if evolution_chain:
+            self.create_all_pokemon_of_evolution_chain(evolution_chain)
         
 
     def get_evolution_chain(self, id_chain):
-        return requests.get('https://pokeapi.co/api/v2/evolution-chain/10').json()
-    
+        response = requests.get(f'https://pokeapi.co/api/v2/evolution-chain/{id_chain}')
+        if response.ok:
+            return response.json()
+        else:
+            return {}
+
 
     def create_all_pokemon_of_evolution_chain(self, evolution_chain):
         pokemons = self.get_pokemons_of_evolution_chain(evolution_chain)
@@ -27,6 +33,7 @@ class Command(BaseCommand):
             pokemon_detail['evolution_type'] = pokemon['evolution_type']
 
             Pokemon.objects.update_or_create(**pokemon_detail)
+            print(pokemon_detail)
     
     
     def get_pokemons_of_evolution_chain(self, evolution_chain):
